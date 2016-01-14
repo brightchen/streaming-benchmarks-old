@@ -16,9 +16,11 @@
     <name>dt.application.MyFirstApplication.operator.randomGenerator.prop.numTuples</name>
     <value>1000</value>
   </property>
-  <property>
-    <name>dt.application.MyFirstApplication.operator.console.prop.stringFormat</name>
-    <value>hello world: %s</value>
-  </property>
+  <!--
+ <property>
+   <name>dt.application.Apex_Benchmark.operator.redisJoin.prop.jedisServer</name>
+   <value>test</value>
+ </property>
+ -->
 </configuration>
 

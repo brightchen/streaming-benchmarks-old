@@ -1,7 +1,7 @@
 /**
  * Put your copyright and license info here.
  */
-package com.datatorrent.benchmarks;
+package com.example;
 
 import java.io.IOException;
 
