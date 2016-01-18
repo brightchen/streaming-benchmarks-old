@@ -4,38 +4,18 @@
 
   <groupId>com.example</groupId>
   <version>1.0-SNAPSHOT</version>
-  <artifactId>mydtapp</artifactId>
+  <artifactId>apex_benchmark</artifactId>
   <packaging>jar</packaging>
 
   <!-- change these to the appropriate values -->
-  <name>My Apex Application</name>
+  <name>Apex_Benchmark</name>
   <description>My Apex Application Description</description>
 
   <properties>
     <!-- change this if you desire to use a different version of DataTorrent -->
-    <datatorrent.version>3.1.1</datatorrent.version>
+    <datatorrent.version>3.2.0-incubating</datatorrent.version>
     <datatorrent.apppackage.classpath>lib/*.jar</datatorrent.apppackage.classpath>
   </properties>
-
-  <!-- repository to provide the DataTorrent artifacts -->
-  <repositories>
-    <repository>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <id>Datatorrent-Releases</id>
-      <name>DataTorrent Release Repository</name>
-      <url>https://www.datatorrent.com/maven/content/repositories/releases/</url>
-    </repository>
-    <repository>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <id>DataTorrent-Snapshots</id>
-      <name>DataTorrent Early Access Program Snapshot Repository</name>
-      <url>https://www.datatorrent.com/maven/content/repositories/snapshots/</url>
-    </repository>
-  </repositories>
 
   <build>
     <plugins>
@@ -254,7 +234,7 @@
   <dependencies>
     <!-- add your dependencies here -->
     <dependency>
-      <groupId>com.datatorrent</groupId>
+      <groupId>org.apache.apex</groupId>
       <artifactId>malhar-library</artifactId>
       <version>${datatorrent.version}</version>
       <!--
@@ -271,7 +251,7 @@
       -->
     </dependency>
     <dependency>
-      <groupId>com.datatorrent</groupId>
+      <groupId>org.apache.apex</groupId>
       <artifactId>malhar-contrib</artifactId>
       <version>${datatorrent.version}</version>
       <!--
@@ -288,8 +268,8 @@
       -->
     </dependency>
     <dependency>
-      <groupId>com.datatorrent</groupId>
-      <artifactId>dt-common</artifactId>
+      <groupId>org.apache.apex</groupId>
+      <artifactId>apex-common</artifactId>
       <version>${datatorrent.version}</version>
       <scope>provided</scope>
     </dependency>
@@ -324,8 +304,8 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>com.datatorrent</groupId>
-      <artifactId>dt-engine</artifactId>
+      <groupId>org.apache.apex</groupId>
+      <artifactId>apex-engine</artifactId>
       <version>${datatorrent.version}</version>
       <scope>test</scope>
     </dependency>

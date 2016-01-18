@@ -27,7 +27,7 @@ public class ApplicationTest {
       conf.addResource(this.getClass().getResourceAsStream("/META-INF/properties.xml"));
       lma.prepareDAG(new Application(), conf);
       LocalMode.Controller lc = lma.getController();
-      lc.run(10000); // runs for 10 seconds and quits
+      lc.run(100000); // runs for 10 seconds and quits
     } catch (ConstraintViolationException e) {
       Assert.fail("constraint violations: " + e.getConstraintViolations());
     }

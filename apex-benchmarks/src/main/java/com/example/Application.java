@@ -1,26 +1,22 @@
 /**
- * Put your copyright and license info here.
+ * Licensed under the terms of the Apache License 2.0. Please see LICENSE file in the project root for terms.
  */
 package com.example;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import benchmark.common.Utils;
-import com.datatorrent.lib.io.IdempotentStorageManager;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-import org.apache.hadoop.conf.Configuration;
-
-import com.datatorrent.api.DAG;
-import com.datatorrent.api.DefaultInputPort;
-import com.datatorrent.api.DefaultOutputPort;
-import com.datatorrent.api.StreamingApplication;
+import benchmark.common.advertising.CampaignProcessorCommon;
+import benchmark.common.advertising.RedisAdCampaignCache;
+import com.datatorrent.api.*;
 import com.datatorrent.api.annotation.ApplicationAnnotation;
 import com.datatorrent.api.annotation.Stateless;
 import com.datatorrent.common.util.BaseOperator;
 import com.datatorrent.contrib.kafka.KafkaSinglePortStringInputOperator;
 import com.datatorrent.netlet.util.DTThrowable;
+import org.apache.hadoop.conf.Configuration;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @ApplicationAnnotation(name = "Apex_Benchmark")
 public class Application implements StreamingApplication
@@ -28,39 +24,43 @@ public class Application implements StreamingApplication
   @Override
   public void populateDAG(DAG dag, Configuration conf)
   {
+    // Create operators for each step
     KafkaSinglePortStringInputOperator kafkaInput = dag.addOperator("kafka", new KafkaSinglePortStringInputOperator());
     DeserializeJSON deserializeJSON = dag.addOperator("deserialize", new DeserializeJSON());
-    FilterTuplesAndFields filterTuplesAndFields = dag.addOperator("filterFields", new FilterTuplesAndFields() );
+    FilterTuples filterTuples = dag.addOperator("filterTuples", new FilterTuples() );
+    FilterFields filterFields = dag.addOperator("filterFields", new FilterFields() );
     RedisJoin redisJoin = dag.addOperator("redisJoin", new RedisJoin());
-    CampaignProcessor campaignProcessor = dag.addOperator("output", new CampaignProcessor());
+    CampaignProcessor campaignProcessor = dag.addOperator("redisOutput", new CampaignProcessor());
 
-    // TODO : fix the path
-    String configPath = new String();
-    Map commonConfig = Utils.findAndReadConfigFile(configPath, true);
-    // String zkServerHosts = joinHosts((List<String>)commonConfig.get("zookeeper.servers"),
-    // Integer.toString((Integer)commonConfig.get("zookeeper.port")));
+    // Set properties
+    String kafkaTopic = "benchmark";
+    String zooKeeper = "127.0.0.1:2181";
+    String initialOffset = "earliest";
+    int partitionCount = 1 ;
 
-    String redisServerHost = (String)commonConfig.get("redis.host");
+    kafkaInput.getConsumer().setTopic(kafkaTopic);
+    kafkaInput.getConsumer().setZookeeper(zooKeeper);
+    kafkaInput.getConsumer().setInitialOffset(initialOffset);
+    kafkaInput.setInitialPartitionCount(partitionCount);
+    // kafkaInput.setIdempotentStorageManager(new IdempotentStorageManager.FSIdempotentStorageManager());
 
-    kafkaInput.setIdempotentStorageManager(new IdempotentStorageManager.FSIdempotentStorageManager());
-    kafkaInput.setInitialPartitionCount(((Number)commonConfig.get("kafka.partitions")).intValue());
-    kafkaInput.getConsumer().setTopic((String)commonConfig.get("kafka.topic"));
-    kafkaInput.getConsumer().setZookeeper("zookeeper");
-    kafkaInput.setInitialOffset("earliest");
+    String redisServer = "127.0.0.1" ;
+    redisJoin.setRedisServerHost(redisServer);
+    campaignProcessor.setRedisServerHost(redisServer);
 
-    redisJoin.setRedisServerHost(redisServerHost);
-    campaignProcessor.setRedisServerHost(redisServerHost);
-
+    // Connect the Ports in the Operators
     dag.addStream("kafka_deserialize", kafkaInput.outputPort, deserializeJSON.input);
-    dag.addStream("deserialize_filterTuples", deserializeJSON.output, filterTuplesAndFields.input);
-    dag.addStream("FilterFields_redisJoin", filterTuplesAndFields.output, redisJoin.input);
+    dag.addStream("deserialize_filterTuples", deserializeJSON.output, filterTuples.input);
+    dag.addStream("filterTuples_filterFields", filterTuples.output, filterFields.input);
+    dag.addStream("FilterFields_redisJoin", filterFields.output, redisJoin.input);
     dag.addStream("redisJoin_output", redisJoin.output, campaignProcessor.input);
   }
 
   @Stateless
-  public class DeserializeJSON extends BaseOperator
+  public static class DeserializeJSON extends BaseOperator
   {
-    public transient DefaultInputPort<String> input = new DefaultInputPort<String>() {
+    public transient DefaultInputPort<String> input = new DefaultInputPort<String>()
+    {
       @Override
       public void process(String t)
       {
@@ -79,24 +79,21 @@ public class Application implements StreamingApplication
   }
 
   @Stateless
-  public class FilterTuplesAndFields extends BaseOperator
+  public static class FilterFields extends BaseOperator
   {
-    public transient DefaultInputPort<JSONObject> input = new DefaultInputPort<JSONObject>() {
+    public transient DefaultInputPort<JSONObject> input = new DefaultInputPort<JSONObject>()
+    {
       @Override
       public void process(JSONObject jsonObject)
       {
         try {
-          if (  jsonObject.getString("event_type").equals("view") ) {
-            Map<String, String> map = new HashMap<>();
-            try {
-              map.put("ad_id", jsonObject.getString("event_time") );
-              map.put("event_time", jsonObject.getString("event_time") );
-            } catch (JSONException e) {
-              e.printStackTrace();
-            }
 
-            output.emit(map);
-          }
+          Map<String, String> map = new HashMap<>();
+
+          map.put("ad_id", jsonObject.getString("ad_id") );
+          map.put("event_time", jsonObject.getString("event_time") );
+
+          output.emit(map);
         } catch (JSONException e) {
           DTThrowable.wrapIfChecked(e);
         }
@@ -105,4 +102,99 @@ public class Application implements StreamingApplication
 
     public transient DefaultOutputPort<Map<String,String>> output = new DefaultOutputPort();
   }
+
+  @Stateless
+  public static class FilterTuples extends BaseOperator
+  {
+    public transient DefaultInputPort<JSONObject> input = new DefaultInputPort<JSONObject>()
+    {
+      @Override
+      public void process(JSONObject jsonObject)
+      {
+        try {
+          if (  jsonObject.getString("event_type").equals("view") ) {
+            output.emit(jsonObject);
+          }
+        } catch (JSONException e) {
+          DTThrowable.wrapIfChecked(e);
+        }
+      }
+    };
+
+    public transient DefaultOutputPort<JSONObject> output = new DefaultOutputPort();
+  }
+
+  public static class RedisJoin extends BaseOperator
+  {
+    private RedisAdCampaignCache redisAdCampaignCache;
+    private String redisServerHost;
+
+    public String getRedisServerHost()
+    {
+      return redisServerHost;
+    }
+
+    public void setRedisServerHost(String redisServerHost)
+    {
+      this.redisServerHost = redisServerHost;
+    }
+
+    public transient DefaultInputPort<Map<String,String>> input = new DefaultInputPort<Map<String,String>>()
+    {
+      @Override
+      public void process(Map<String,String> map)
+      {
+        String campaign_id = redisAdCampaignCache.execute(map.get("ad_id"));
+
+        if ( campaign_id == null ) {
+          return;
+        }
+
+        map.put("campaign_id", campaign_id);
+
+        output.emit(map);
+      }
+    };
+
+    public transient DefaultOutputPort<Map<String,String>> output = new DefaultOutputPort();
+
+    @Override
+    public void setup(Context.OperatorContext context)
+    {
+      this.redisAdCampaignCache = new RedisAdCampaignCache(redisServerHost);
+      this.redisAdCampaignCache.prepare();
+    }
+  }
+
+  public static class CampaignProcessor extends BaseOperator
+  {
+    private CampaignProcessorCommon campaignProcessorCommon;
+    private String redisServerHost;
+
+    public String getRedisServerHost()
+    {
+      return redisServerHost;
+    }
+
+    public void setRedisServerHost(String redisServerHost)
+    {
+      this.redisServerHost = redisServerHost;
+    }
+
+    public transient DefaultInputPort<Map<String,String>> input = new DefaultInputPort<Map<String,String>>()
+    {
+      @Override
+      public void process(Map<String,String> map)
+      {
+        campaignProcessorCommon.execute(map.get("campaign_id"), map.get("auto_id"));
+      }
+    };
+
+    public void setup(Context.OperatorContext context)
+    {
+      campaignProcessorCommon = new CampaignProcessorCommon(redisServerHost);
+      this.campaignProcessorCommon.prepare();
+    }
+  }
 }
+
