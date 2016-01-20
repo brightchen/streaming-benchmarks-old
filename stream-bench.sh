@@ -122,7 +122,7 @@ run() {
 	echo 'storm.workers: 1' >> $CONF_FILE
 	echo 'storm.ackers: 2' >> $CONF_FILE
 	echo 'spark.batchtime: 2000' >> $CONF_FILE
-	
+
     $MVN clean install -Dspark.version="$SPARK_VERSION" -Dkafka.version="$KAFKA_VERSION" -Dflink.version="$FLINK_VERSION" -Dstorm.version="$STORM_VERSION" -Dscala.binary.version="$SCALA_BIN_VERSION" -Dscala.version="$SCALA_BIN_VERSION.$SCALA_SUB_VERSION"
 
     #Fetch and build Redis
@@ -247,18 +247,18 @@ run() {
       sleep 3
     fi
   elif [ "START_APEX_LOCAL" = "$OPERATION" ];
-    then
-    "$APEX_DIR/engine/src/main/scripts/dtcli" -e \" ./apex-benchmarks/target/apex_benchmark-1.0-SNAPSHOT.apa"
-     sleep 5
+      then
+      "$APEX_DIR/engine/src/main/scripts/dtcli" -e "./apex-benchmarks/target/apex_benchmark-1.0-SNAPSHOT.apa"
+       sleep 5
   elif [ "STOP_APEX_LOCAL" = "$OPERATION" ];
-    then
-    #stop local
+       then
+       "#stop local"
   elif [ "START_APEX_ON_YARN" = "$OPERATION" ];
-    then
-     #
+       then
+        "ls"
   elif [ "STOP_APEX_ON_YARN" = "$OPERATION" ];
-    then
-        #stop the app
+       then
+       "#stop the app"
   elif [ "STORM_TEST" = "$OPERATION" ];
   then
     run "START_ZK"
@@ -352,22 +352,17 @@ run() {
     echo "STOP_FLINK: kill flink processes"
     echo "START_SPARK: run spark processes"
     echo "STOP_SPARK: kill spark processes"
-    echo "START_APEX: run Apex processes"
-    echo "STOP_APEX: kill Apex processes"
-    echo 
+    echo
     echo "START_STORM_TOPOLOGY: run the storm test topology"
     echo "STOP_STORM_TOPOLOGY: kill the storm test topology"
     echo "START_FLINK_PROCESSING: run the flink test processing"
     echo "STOP_FLINK_PROCESSSING: kill the flink test processing"
     echo "START_SPARK_PROCESSING: run the spark test processing"
     echo "STOP_SPARK_PROCESSSING: kill the spark test processing"
-    echo "START_APEX_PROCESSING: run the Apex test processing"
-    echo "STOP_APEX_PROCESSING: kill the Apex test processing"
     echo
     echo "STORM_TEST: run storm test (assumes SETUP is done)"
     echo "FLINK_TEST: run flink test (assumes SETUP is done)"
     echo "SPARK_TEST: run spark test (assumes SETUP is done)"
-    echo "APEX_TEST: run Apex test (assumes SETUP is done)"
     echo "STOP_ALL: stop everything"
     echo
     echo "HELP: print out this message"
