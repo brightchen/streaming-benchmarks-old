@@ -5,6 +5,7 @@ package com.example;
 
 import benchmark.common.advertising.CampaignProcessorCommon;
 import benchmark.common.advertising.RedisAdCampaignCache;
+
 import com.datatorrent.api.*;
 import com.datatorrent.api.annotation.ApplicationAnnotation;
 import com.datatorrent.api.annotation.Stateless;
@@ -36,7 +37,7 @@ public class Application implements StreamingApplication
     String kafkaTopic = "benchmark";
     String zooKeeper = "127.0.0.1:2181";
     String initialOffset = "earliest";
-    int partitionCount = 1 ;
+    int partitionCount = 1;
 
     kafkaInput.getConsumer().setTopic(kafkaTopic);
     kafkaInput.getConsumer().setZookeeper(zooKeeper);
@@ -44,7 +45,7 @@ public class Application implements StreamingApplication
     kafkaInput.setInitialPartitionCount(partitionCount);
     // kafkaInput.setIdempotentStorageManager(new IdempotentStorageManager.FSIdempotentStorageManager());
 
-    String redisServer = "127.0.0.1" ;
+    String redisServer = "127.0.0.1";
     redisJoin.setRedisServerHost(redisServer);
     campaignProcessor.setRedisServerHost(redisServer);
 
@@ -54,6 +55,29 @@ public class Application implements StreamingApplication
     dag.addStream("filterTuples_filterFields", filterTuples.output, filterFields.input);
     dag.addStream("FilterFields_redisJoin", filterFields.output, redisJoin.input);
     dag.addStream("redisJoin_output", redisJoin.output, campaignProcessor.input);
+  }
+
+  public static void main( String [] args )
+  {
+    RunLocalMode runLocalMode = new RunLocalMode();
+    runLocalMode.run();
+  }
+
+  public static class RunLocalMode
+  {
+    public void run()
+    {
+      LocalMode lma = LocalMode.newInstance();
+      Configuration conf = new Configuration(false);
+      conf.addResource(this.getClass().getResourceAsStream("/META-INF/properties.xml"));
+      try {
+        lma.prepareDAG(new Application(), conf);
+      } catch (Exception e1) {
+        e1.printStackTrace();
+      }
+      LocalMode.Controller lc = lma.getController();
+      lc.run();
+    }
   }
 
   @Stateless
@@ -197,4 +221,3 @@ public class Application implements StreamingApplication
     }
   }
 }
-

@@ -18,12 +18,14 @@ SCALA_SUB_VERSION=${SCALA_SUB_VERSION:-"4"}
 STORM_VERSION=${STORM_VERSION:-"0.10.0"}
 FLINK_VERSION=${FLINK_VERSION:-"0.10.1"}
 SPARK_VERSION=${SPARK_VERSION:-"1.5.1"}
+APEX_VERSION=${APEX_VERSION:-"3.2.0-incubating"}
 
 STORM_DIR="apache-storm-$STORM_VERSION"
 REDIS_DIR="redis-$REDIS_VERSION"
 KAFKA_DIR="kafka_$SCALA_BIN_VERSION-$KAFKA_VERSION"
 FLINK_DIR="flink-$FLINK_VERSION"
 SPARK_DIR="spark-$SPARK_VERSION-bin-hadoop2.6"
+APEX_DIR="apex-$APEX_VERSION"
 
 ZK_HOST="localhost"
 ZK_PORT="2181"
@@ -240,6 +242,19 @@ run() {
       "$FLINK_DIR/bin/flink" cancel $FLINK_ID
       sleep 3
     fi
+  elif [ "START_APEX_PROCESSING" = "$OPERATION" ];
+    then
+    "$FLINK_DIR/bin/flink" run ./flink-benchmarks/target/flink-benchmarks-0.1.0.jar --confPath $CONF_FILE &
+     sleep 3
+  elif [ "STOP_APEX_PROCESSING" = "$OPERATION" ];
+    then
+    "$FLINK_DIR/bin/flink" run ./flink-benchmarks/target/flink-benchmarks-0.1.0.jar --confPath $CONF_FILE &
+  elif [ "START_APEX" = "$OPERATION" ];
+    then
+     start_if_needed org.apache.flink.runtime.jobmanager.JobManager Flink 1 $FLINK_DIR/bin/start-local.sh
+  elif [ "STOP_APEX" = "$OPERATION" ];
+    then
+      $FLINK_DIR/bin/stop-local.sh
   elif [ "STORM_TEST" = "$OPERATION" ];
   then
     run "START_ZK"
@@ -285,6 +300,21 @@ run() {
     run "STOP_KAFKA"
     run "STOP_REDIS"
     run "STOP_ZK"
+ elif [ "APEX_TEST" = "$OPERATION" ];
+  then
+    run "START_ZK"
+    run "START_REDIS"
+    run "START_KAFKA"
+    run "START_APEX"
+    run "START_APEX_PROCESSING"
+    run "START_LOAD"
+    sleep $TEST_TIME
+    run "STOP_LOAD"
+    run "STOP_APEX_PROCESSING"
+    run "STOP_APEX"
+    run "STOP_KAFKA"
+    run "STOP_REDIS"
+    run "STOP_ZK"
   elif [ "STOP_ALL" = "$OPERATION" ];
   then
     run "STOP_LOAD"
@@ -294,6 +324,8 @@ run() {
     run "STOP_FLINK"
     run "STOP_STORM_TOPOLOGY"
     run "STOP_STORM"
+    run "STOP_APEX_TOPOLOGY"
+    run "STOP_APEX"
     run "STOP_KAFKA"
     run "STOP_REDIS"
     run "STOP_ZK"
@@ -319,6 +351,8 @@ run() {
     echo "STOP_FLINK: kill flink processes"
     echo "START_SPARK: run spark processes"
     echo "STOP_SPARK: kill spark processes"
+    echo "START_APEX: run Apex processes"
+    echo "STOP_APEX: kill Apex processes"
     echo 
     echo "START_STORM_TOPOLOGY: run the storm test topology"
     echo "STOP_STORM_TOPOLOGY: kill the storm test topology"
@@ -326,10 +360,13 @@ run() {
     echo "STOP_FLINK_PROCESSSING: kill the flink test processing"
     echo "START_SPARK_PROCESSING: run the spark test processing"
     echo "STOP_SPARK_PROCESSSING: kill the spark test processing"
+    echo "START_APEX_PROCESSING: run the Apex test processing"
+    echo "STOP_APEX_PROCESSSING: kill the Apex test processing"
     echo
     echo "STORM_TEST: run storm test (assumes SETUP is done)"
     echo "FLINK_TEST: run flink test (assumes SETUP is done)"
     echo "SPARK_TEST: run spark test (assumes SETUP is done)"
+    echo "APEX_TEST: run Apex test (assumes SETUP is done)"
     echo "STOP_ALL: stop everything"
     echo
     echo "HELP: print out this message"
