@@ -57,29 +57,6 @@ public class Application implements StreamingApplication
     dag.addStream("redisJoin_output", redisJoin.output, campaignProcessor.input);
   }
 
-  public static void main( String [] args )
-  {
-    RunLocalMode runLocalMode = new RunLocalMode();
-    runLocalMode.run();
-  }
-
-  public static class RunLocalMode
-  {
-    public void run()
-    {
-      LocalMode lma = LocalMode.newInstance();
-      Configuration conf = new Configuration(false);
-      conf.addResource(this.getClass().getResourceAsStream("/META-INF/properties.xml"));
-      try {
-        lma.prepareDAG(new Application(), conf);
-      } catch (Exception e1) {
-        e1.printStackTrace();
-      }
-      LocalMode.Controller lc = lma.getController();
-      lc.run();
-    }
-  }
-
   @Stateless
   public static class DeserializeJSON extends BaseOperator
   {
