@@ -138,7 +138,7 @@ run() {
     fetch_untar_file "$KAFKA_FILE" "http://mirrors.advancedhosters.com/apache/kafka/$KAFKA_VERSION/$KAFKA_FILE"
 
     #Fetch Apex
-    APEX_FILE="$APEX_DIR.tgz"
+    APEX_FILE="$APEX_DIR.tgz.gz"
     fetch_untar_file "$APEX_FILE" "http://apachemirror.ovidiudan.com/incubator/apex/v$APEX_VERSION/apex-$APEX_VERSION-source-release.tar.gz"
 
     #Fetch Storm
