@@ -42,6 +42,7 @@ public class Application implements StreamingApplication
     kafkaInput.getConsumer().setTopic(kafkaTopic);
     kafkaInput.getConsumer().setZookeeper(zooKeeper);
     kafkaInput.getConsumer().setInitialOffset(initialOffset);
+
     kafkaInput.setInitialPartitionCount(partitionCount);
     // kafkaInput.setIdempotentStorageManager(new IdempotentStorageManager.FSIdempotentStorageManager());
 

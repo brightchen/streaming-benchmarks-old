@@ -3,7 +3,7 @@
 
   <property>
     <name>dt.application.Apex_Benchmark.operator.kafka.prop.consumer.topic</name>
-    <value>benchmark</value>
+    <value>ad-events</value>
   </property>
 
   <property>

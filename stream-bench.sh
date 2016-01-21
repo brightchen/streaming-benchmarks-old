@@ -123,7 +123,7 @@ run() {
 	echo 'storm.ackers: 2' >> $CONF_FILE
 	echo 'spark.batchtime: 2000' >> $CONF_FILE
 
-    $MVN clean install -Dspark.version="$SPARK_VERSION" -Dkafka.version="$KAFKA_VERSION" -Dflink.version="$FLINK_VERSION" -Dstorm.version="$STORM_VERSION" -Dscala.binary.version="$SCALA_BIN_VERSION" -Dscala.version="$SCALA_BIN_VERSION.$SCALA_SUB_VERSION"
+    $MVN clean install -Dspark.version="$SPARK_VERSION" -Dkafka.version="$KAFKA_VERSION" -Dflink.version="$FLINK_VERSION" -Dstorm.version="$STORM_VERSION" -Dscala.binary.version="$SCALA_BIN_VERSION" -Dscala.version="$SCALA_BIN_VERSION.$SCALA_SUB_VERSION" -Dapex.version="$APEX_VERSION"
 
     #Fetch and build Redis
     REDIS_FILE="$REDIS_DIR.tar.gz"
@@ -248,14 +248,14 @@ run() {
     fi
   elif [ "START_APEX_LOCAL" = "$OPERATION" ];
       then
-      "$APEX_DIR/engine/src/main/scripts/dtcli" -e "./apex-benchmarks/target/apex_benchmark-1.0-SNAPSHOT.apa"
+      "$APEX_DIR/engine/src/main/scripts/dtcli" -e "launch local ./apex-benchmarks/target/apex_benchmark-1.0-SNAPSHOT.apa"
        sleep 5
   elif [ "STOP_APEX_LOCAL" = "$OPERATION" ];
        then
        "#stop local"
   elif [ "START_APEX_ON_YARN" = "$OPERATION" ];
        then
-        "ls"
+        "$APEX_DIR/engine/src/main/scripts/dtcli" -e "launch ./apex-benchmarks/target/apex_benchmark-1.0-SNAPSHOT.apa"
   elif [ "STOP_APEX_ON_YARN" = "$OPERATION" ];
        then
        "#stop the app"
