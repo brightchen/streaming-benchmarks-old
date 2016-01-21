@@ -139,7 +139,7 @@ run() {
 
     #Fetch Apex
     APEX_FILE="$APEX_DIR.tgz"
-    fetch_untar_file "$APEX_FILE" "http://www.apache.org/dyn/closer.lua/incubator/apex/v$APEX_VERSION/apex-$APEX_VERSION-source-release.tar.gz"
+    fetch_untar_file "$APEX_FILE" "http://apachemirror.ovidiudan.com/incubator/apex/v$APEX_VERSION/apex-$APEX_VERSION-source-release.tar.gz"
 
     #Fetch Storm
     STORM_FILE="$STORM_DIR.tar.gz"
