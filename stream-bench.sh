@@ -137,6 +137,10 @@ run() {
     KAFKA_FILE="$KAFKA_DIR.tgz"
     fetch_untar_file "$KAFKA_FILE" "http://mirrors.advancedhosters.com/apache/kafka/$KAFKA_VERSION/$KAFKA_FILE"
 
+    #Fetch Apex
+    APEX_FILE="$APEX_DIR.tgz"
+    fetch_untar_file "$APEX_FILE" "http://www.apache.org/dyn/closer.lua/incubator/apex/v$APEX_VERSION/apex-$APEX_VERSION-source-release.tar.gz"
+
     #Fetch Storm
     STORM_FILE="$STORM_DIR.tar.gz"
     fetch_untar_file "$STORM_FILE" "http://www.interior-dsgn.com/apache/storm/$STORM_DIR/$STORM_FILE"
@@ -148,10 +152,6 @@ run() {
     #Fetch Spark
     SPARK_FILE="$SPARK_DIR.tgz"
     fetch_untar_file "$SPARK_FILE" "http://mirror.nexcess.net/apache/spark/spark-$SPARK_VERSION/$SPARK_FILE"
-
-     #Fetch Spark
-     APEX_FILE="$APEX_DIR.tgz"
-     fetch_untar_file "$APEX_FILE" "http://www.apache.org/dyn/closer.lua/incubator/apex/v$APEX_VERSION/apex-$APEX_VERSION-source-release.tar.gz"
 
   elif [ "START_ZK" = "$OPERATION" ];
   then
