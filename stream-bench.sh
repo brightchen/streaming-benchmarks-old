@@ -140,6 +140,9 @@ run() {
     #Fetch Apex
     APEX_FILE="$APEX_DIR.tgz.gz"
     fetch_untar_file "$APEX_FILE" "http://apachemirror.ovidiudan.com/incubator/apex/v$APEX_VERSION/apex-$APEX_VERSION-source-release.tar.gz"
+    cd $APEX_FILE
+    $MVN clean install -DskipTests
+    cd ..
 
     #Fetch Storm
     STORM_FILE="$STORM_DIR.tar.gz"
@@ -248,8 +251,8 @@ run() {
     fi
   elif [ "START_APEX_LOCAL" = "$OPERATION" ];
       then
-      "$APEX_DIR/engine/src/main/scripts/dtcli" -e "launch local ./apex-benchmarks/target/apex_benchmark-1.0-SNAPSHOT.apa -conf ./conf/apex.xml"
-       sleep 5
+      "$APEX_DIR/engine/src/main/scripts/dtcli" -e "launch -local -conf ./conf/apex.xml ./apex-benchmarks/target/apex_benchmark-1.0-SNAPSHOT.apa"
+             sleep 5
   elif [ "STOP_APEX_LOCAL" = "$OPERATION" ];
        then
        pkill dtcli
