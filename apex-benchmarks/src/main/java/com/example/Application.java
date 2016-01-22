@@ -25,7 +25,7 @@ public class Application implements StreamingApplication
   @Override
   public void populateDAG(DAG dag, Configuration conf)
   {
-    // Create operators for each step
+    // Create operators for each step & settings are applied by the platform using config file.
     KafkaSinglePortStringInputOperator kafkaInput = dag.addOperator("kafka", new KafkaSinglePortStringInputOperator());
     DeserializeJSON deserializeJSON = dag.addOperator("deserialize", new DeserializeJSON());
     FilterTuples filterTuples = dag.addOperator("filterTuples", new FilterTuples() );
