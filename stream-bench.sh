@@ -251,6 +251,7 @@ run() {
       "$APEX_DIR/engine/src/main/scripts/dtcli" -e "launch local ./apex-benchmarks/target/apex_benchmark-1.0-SNAPSHOT.apa -conf ./conf/apex.xml"
        sleep 5
   elif [ "STOP_APEX_LOCAL" = "$OPERATION" ];
+       then
        pkill dtcli
   elif [ "START_APEX_ON_YARN" = "$OPERATION" ];
        then
