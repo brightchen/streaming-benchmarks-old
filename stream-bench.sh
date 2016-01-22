@@ -248,13 +248,13 @@ run() {
     fi
   elif [ "START_APEX_LOCAL" = "$OPERATION" ];
       then
-      "$APEX_DIR/engine/src/main/scripts/dtcli" -e "launch local ./apex-benchmarks/target/apex_benchmark-1.0-SNAPSHOT.apa"
+      "$APEX_DIR/engine/src/main/scripts/dtcli" -e "launch local ./apex-benchmarks/target/apex_benchmark-1.0-SNAPSHOT.apa -conf ./conf/apex.xml"
        sleep 5
   elif [ "STOP_APEX_LOCAL" = "$OPERATION" ];
        pkill dtcli
   elif [ "START_APEX_ON_YARN" = "$OPERATION" ];
        then
-        "$APEX_DIR/engine/src/main/scripts/dtcli" -e "launch ./apex-benchmarks/target/apex_benchmark-1.0-SNAPSHOT.apa"
+        "$APEX_DIR/engine/src/main/scripts/dtcli" -e "launch ./apex-benchmarks/target/apex_benchmark-1.0-SNAPSHOT.apa -conf ./conf/apex.xml"
   elif [ "STOP_APEX_ON_YARN" = "$OPERATION" ];
        then
        APP_ID=`"$APEX_DIR/engine/src/main/scripts/dtcli" -e "list-apps" | grep id | awk '{ print $2 }'| cut -c -1 ; true`
