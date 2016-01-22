@@ -315,11 +315,11 @@ run() {
     run "START_ZK"
     run "START_REDIS"
     run "START_KAFKA"
-    run "START_APEX_PROCESSING"
+    run "START_APEX_LOCAL"
     run "START_LOAD"
     sleep $TEST_TIME
     run "STOP_LOAD"
-    run "STOP_APEX_PROCESSING"
+    run "STOP_APEX_LOCAL"
     run "STOP_KAFKA"
     run "STOP_REDIS"
     run "STOP_ZK"
@@ -365,10 +365,13 @@ run() {
     echo "STOP_FLINK_PROCESSSING: kill the flink test processing"
     echo "START_SPARK_PROCESSING: run the spark test processing"
     echo "STOP_SPARK_PROCESSSING: kill the spark test processing"
+    echo "START_APEX_LOCAL: run the Apex test processing"
+    echo "STOP_APEX_LOCAL: kill the Apex test processing"
     echo
     echo "STORM_TEST: run storm test (assumes SETUP is done)"
     echo "FLINK_TEST: run flink test (assumes SETUP is done)"
     echo "SPARK_TEST: run spark test (assumes SETUP is done)"
+    echo "APEX_TEST: run Apex test (assumes SETUP is done)"
     echo "STOP_ALL: stop everything"
     echo
     echo "HELP: print out this message"
