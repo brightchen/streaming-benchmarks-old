@@ -140,7 +140,7 @@ run() {
     #Fetch Apex
     APEX_FILE="$APEX_DIR.tgz.gz"
     fetch_untar_file "$APEX_FILE" "http://apachemirror.ovidiudan.com/incubator/apex/v$APEX_VERSION/apex-$APEX_VERSION-source-release.tar.gz"
-    cd $APEX_FILE
+    cd $APEX_DIR
     $MVN clean install -DskipTests
     cd ..
 
