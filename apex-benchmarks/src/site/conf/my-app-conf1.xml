@@ -2,17 +2,22 @@
 <configuration>
 
   <property>
-    <name>dt.application.Apex_Benchmark.operator.kafka.prop.consumer.topic</name>
-    <value>benchmark</value>
+    <name>dt.application.Apex_Benchmark.operator.kafkaInput.prop.consumer.topic</name>
+    <value>ad-events</value>
   </property>
 
   <property>
-    <name>dt.application.Apex_Benchmark.operator.kafka.prop.consumer.zookeeper</name>
+    <name>dt.application.Apex_Benchmark.operator.kafkaInput.prop.consumer.zookeeper</name>
     <value>127.0.0.1:2181</value>
   </property>
 
   <property>
-    <name>dt.application.Apex_Benchmark.operator.kafka.prop.consumer.offset</name>
+    <name>dt.application.Apex_Benchmark.operator.kafkaInput.prop.initialPartitionCount</name>
+    <value>1</value>
+  </property>
+
+  <property>
+    <name>dt.application.Apex_Benchmark.operator.kafkaInput.prop.consumer.offset</name>
     <value>earliest</value>
   </property>
 
@@ -22,7 +27,7 @@
   </property>
 
   <property>
-    <name>dt.application.Apex_Benchmark.operator.redisOutput.redisServerHost</name>
+    <name>dt.application.Apex_Benchmark.operator.campaignProcessor.redisServerHost</name>
     <value>127.0.0.1</value>
   </property>
 

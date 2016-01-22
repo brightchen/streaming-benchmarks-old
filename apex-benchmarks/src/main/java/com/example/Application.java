@@ -33,22 +33,7 @@ public class Application implements StreamingApplication
     RedisJoin redisJoin = dag.addOperator("redisJoin", new RedisJoin());
     CampaignProcessor campaignProcessor = dag.addOperator("redisOutput", new CampaignProcessor());
 
-    // Set properties
-    String kafkaTopic = "benchmark";
-    String zooKeeper = "127.0.0.1:2181";
-    String initialOffset = "earliest";
-    int partitionCount = 1;
-
-    kafkaInput.getConsumer().setTopic(kafkaTopic);
-    kafkaInput.getConsumer().setZookeeper(zooKeeper);
-    kafkaInput.getConsumer().setInitialOffset(initialOffset);
-
-    kafkaInput.setInitialPartitionCount(partitionCount);
     // kafkaInput.setIdempotentStorageManager(new IdempotentStorageManager.FSIdempotentStorageManager());
-
-    String redisServer = "127.0.0.1";
-    redisJoin.setRedisServerHost(redisServer);
-    campaignProcessor.setRedisServerHost(redisServer);
 
     // Connect the Ports in the Operators
     dag.addStream("kafka_deserialize", kafkaInput.outputPort, deserializeJSON.input);
