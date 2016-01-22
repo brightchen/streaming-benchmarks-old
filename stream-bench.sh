@@ -266,7 +266,7 @@ run() {
        then
          echo "Could not find streaming job to kill"
        else
-        "$APEX_DIR/engine/src/main/scripts/dtcli" -e "list-apps $APP_ID"
+        "$APEX_DIR/engine/src/main/scripts/dtcli" -e "kill-app $APP_ID"
          sleep 3
        fi
   elif [ "STORM_TEST" = "$OPERATION" ];
