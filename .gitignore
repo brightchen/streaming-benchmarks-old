@@ -6,3 +6,7 @@ download-cache
 .idea/**
 .idea
 *.iml
+.project
+bin
+.classpath
+.settings
