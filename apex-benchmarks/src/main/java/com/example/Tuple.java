@@ -3,9 +3,11 @@ package com.example;
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.apex.malhar.lib.dimensions.aggregator.AggregateEvent;
+import org.apache.apex.malhar.lib.dimensions.aggregator.AggregateEvent.Aggregator;
+
 import com.datatorrent.lib.appdata.schemas.TimeBucket;
 import com.datatorrent.lib.statistics.DimensionsComputation;
-import com.datatorrent.lib.statistics.DimensionsComputation.Aggregator;
 
 /**
  * Created by sandesh on 3/18/16.
@@ -106,7 +108,7 @@ public class Tuple implements Serializable
         && this.clicks == tuple.clicks;
   }
   
-  public static class TupleAggregateEvent extends Tuple implements DimensionsComputation.AggregateEvent
+  public static class TupleAggregateEvent extends Tuple implements AggregateEvent
   {
     private static final long serialVersionUID = 1L;
     int aggregatorIndex;
@@ -293,7 +295,7 @@ public class Tuple implements Serializable
       dest.clicks += src.clicks;
     }
 
-    @Override
+    //@Override
     public int computeHashCode(Tuple event)
     {
       int hash = 5;
@@ -337,6 +339,12 @@ public class Tuple implements Serializable
 
     @SuppressWarnings("FieldNameHidesFieldInSuperclass")
     private static final long serialVersionUID = 201402211829L;
+
+    @Override
+    public int hashCode(Tuple o)
+    {
+      return computeHashCode(o);
+    }
   }
 
 }

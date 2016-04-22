@@ -3,9 +3,10 @@ package com.example;
 
 import java.util.Map;
 
+import org.apache.apex.malhar.lib.dimensions.DimensionsEvent.InputEvent;
+
 import com.datatorrent.lib.appdata.gpo.GPOMutable;
 import com.datatorrent.lib.dimensions.AbstractDimensionsComputationFlexibleSingleSchema;
-import com.datatorrent.lib.dimensions.DimensionsEvent.InputEvent;
 
 public class SpecificDimensionComputation extends AbstractDimensionsComputationFlexibleSingleSchema<Tuple>
 {

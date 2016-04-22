@@ -2,15 +2,15 @@ package com.example;
 
 import java.net.URI;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.apache.apex.malhar.lib.dimensions.DimensionsEvent.Aggregate;
+import org.apache.apex.malhar.lib.dimensions.DimensionsEvent.InputEvent;
 import org.apache.commons.lang.mutable.MutableLong;
 import org.apache.hadoop.conf.Configuration;
 
-import com.example.Tuple.TupleAggregator;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 
@@ -27,11 +27,8 @@ import com.datatorrent.contrib.dimensions.DimensionStoreHDHTNonEmptyQueryResultU
 import com.datatorrent.contrib.hdht.tfile.TFileImpl;
 import com.datatorrent.lib.appdata.schemas.SchemaUtils;
 import com.datatorrent.lib.counters.BasicCounters;
-import com.datatorrent.lib.dimensions.DimensionsEvent.Aggregate;
-import com.datatorrent.lib.dimensions.DimensionsEvent.InputEvent;
 import com.datatorrent.lib.io.PubSubWebSocketAppDataQuery;
 import com.datatorrent.lib.io.PubSubWebSocketAppDataResult;
-import com.datatorrent.lib.statistics.DimensionsComputation;
 import com.datatorrent.lib.statistics.DimensionsComputationUnifierImpl;
 
 /**
@@ -51,7 +48,7 @@ public class ApplicationDimensionComputation implements StreamingApplication
   protected String eventSchemaLocation = DIMENSION_SCHEMA;
   protected String PROP_STORE_PATH;
   
-  protected int storePartitionCount = 1;
+  protected int storePartitionCount = 2;
   
   public ApplicationDimensionComputation()
   {
