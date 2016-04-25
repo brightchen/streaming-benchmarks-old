@@ -48,7 +48,7 @@ public class ApplicationDimensionComputation implements StreamingApplication
   protected String eventSchemaLocation = DIMENSION_SCHEMA;
   protected String PROP_STORE_PATH;
   
-  protected int storePartitionCount = 2;
+  protected int storePartitionCount = 1;
   
   public ApplicationDimensionComputation()
   {
