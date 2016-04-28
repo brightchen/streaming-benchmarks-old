@@ -1,23 +1,15 @@
 package com.example;
 
-import com.datatorrent.api.Context;
 import com.datatorrent.api.DefaultOutputPort;
 import com.datatorrent.api.InputOperator;
 import com.datatorrent.common.util.BaseOperator;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FSDataInputStream;
-import org.apache.hadoop.fs.FSDataOutputStream;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
 
-import java.io.*;
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created by sandesh on 2/24/16.
  */
-public class EventGenerator extends BaseOperator implements InputOperator {
+public class EventGenerator2 extends BaseOperator implements InputOperator {
 
     public final transient DefaultOutputPort<String> out = new DefaultOutputPort<String>();
 
@@ -28,22 +20,21 @@ public class EventGenerator extends BaseOperator implements InputOperator {
     private String userID = UUID.randomUUID().toString();
     private final String[] eventTypes = new String[]{"view", "click", "purchase"};
 
-    private List<Integer> ads;
-    private final Map<Integer, List<Integer>> campaigns;
+    private List<String> ads;
+    private final Map<String, List<String>> campaigns;
 
-    public EventGenerator() {
+    public EventGenerator2() {
         this.campaigns = generateCampaigns();
         this.ads = flattenCampaigns();
     }
 
-    public Map<Integer, List<Integer>> getCampaigns() {
+    public Map<String, List<String>> getCampaigns() {
         return campaigns;
     }
 
     /**
      * Generate a single element
      */
-
     public String generateElement() {
         if (adsIdx == ads.size()) {
             adsIdx = 0;
@@ -72,17 +63,16 @@ public class EventGenerator extends BaseOperator implements InputOperator {
     /**
      * Generate a random list of ads and campaigns
      */
-    private Map<Integer, List<Integer>> generateCampaigns() {
+    private Map<String, List<String>> generateCampaigns() {
         int numCampaigns = 100;
         int numAdsPerCampaign = 10;
-        Random random = new Random();
-        Map<Integer, List<Integer>> adsByCampaign = new LinkedHashMap<>();
+        Map<String, List<String>> adsByCampaign = new LinkedHashMap<>();
         for (int i = 0; i < numCampaigns; i++) {
-            Integer campaign = random.nextInt();
-            ArrayList<Integer> ads = new ArrayList<>();
+            String campaign = UUID.randomUUID().toString();
+            ArrayList<String> ads = new ArrayList<>();
             adsByCampaign.put(campaign, ads);
             for (int j = 0; j < numAdsPerCampaign; j++) {
-                ads.add(random.nextInt());
+                ads.add(UUID.randomUUID().toString());
             }
         }
         return adsByCampaign;
@@ -91,11 +81,11 @@ public class EventGenerator extends BaseOperator implements InputOperator {
     /**
      * Flatten into just ads
      */
-    private List<Integer> flattenCampaigns() {
+    private List<String> flattenCampaigns() {
         // Flatten campaigns into simple list of ads
-        List<Integer> ads = new ArrayList<>();
-        for (Map.Entry<Integer, List<Integer>> entry : campaigns.entrySet()) {
-            for (Integer ad : entry.getValue()) {
+        List<String> ads = new ArrayList<>();
+        for (Map.Entry<String, List<String>> entry : campaigns.entrySet()) {
+            for (String ad : entry.getValue()) {
                 ads.add(ad);
             }
         }
@@ -104,7 +94,6 @@ public class EventGenerator extends BaseOperator implements InputOperator {
 
     @Override
     public void emitTuples() {
-        for(int index=0; index < 100; ++index)
-            out.emit( generateElement() ) ;
+        out.emit( generateElement() ) ;
     }
 }

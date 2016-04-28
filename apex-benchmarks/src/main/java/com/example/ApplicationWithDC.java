@@ -8,6 +8,9 @@ import com.datatorrent.api.DefaultOutputPort;
 import com.datatorrent.api.annotation.ApplicationAnnotation;
 import com.datatorrent.common.partitioner.StatelessPartitioner;
 
+import java.util.List;
+import java.util.Map;
+
 @ApplicationAnnotation(name = ApplicationWithDC.APP_NAME)
 public class ApplicationWithDC extends ApplicationDimensionComputation
 {
@@ -35,15 +38,15 @@ public class ApplicationWithDC extends ApplicationDimensionComputation
     FilterTuples filterTuples = dag.addOperator("filterTuples", new FilterTuples());
     FilterFields filterFields = dag.addOperator("filterFields", new FilterFields());
     RedisJoin redisJoin = dag.addOperator("redisJoin", new RedisJoin());
-    //CampaignProcessorWithApexWindow campaignProcessor = dag.addOperator("campaignProcessor", new CampaignProcessorWithApexWindow());
+    setupRedis(eventGenerator.getCampaigns());
+  //  CampaignProcessor campaignProcessor = dag.addOperator("campaignProcessor", new CampaignProcessor());
 
-    // kafkaInput.setIdempotentStorageManager(new IdempotentStorageManager.FSIdempotentStorageManager());
 
     // Connect the Ports in the Operators
-    dag.addStream("deserialize", eventGenerator.out, deserializeJSON.input);
+    dag.addStream("deserialize", eventGenerator.out, deserializeJSON.input).setLocality(DAG.Locality.CONTAINER_LOCAL);
     dag.addStream("filterTuples", deserializeJSON.output, filterTuples.input).setLocality(DAG.Locality.CONTAINER_LOCAL);
-    dag.addStream("filterFields", filterTuples.output, filterFields.input).setLocality(DAG.Locality.CONTAINER_LOCAL);
-    dag.addStream("redisJoin", filterFields.output, redisJoin.input).setLocality(DAG.Locality.CONTAINER_LOCAL);
+    dag.addStream("filterFields", filterTuples.output, filterFields.input).setLocality(DAG.Locality.THREAD_LOCAL);
+    dag.addStream("redisJoin", filterFields.output, redisJoin.input).setLocality(DAG.Locality.THREAD_LOCAL);
     //dag.addStream("output", redisJoin.output, campaignProcessor.input);
 
     dag.setInputPortAttribute(deserializeJSON.input, Context.PortContext.PARTITION_PARALLEL, true);
@@ -51,8 +54,16 @@ public class ApplicationWithDC extends ApplicationDimensionComputation
     dag.setInputPortAttribute(filterFields.input, Context.PortContext.PARTITION_PARALLEL, true);
     dag.setInputPortAttribute(redisJoin.input, Context.PortContext.PARTITION_PARALLEL, true);
 
-    dag.setAttribute(eventGenerator, Context.OperatorContext.PARTITIONER, new StatelessPartitioner<EventGenerator>(5));
+    dag.setAttribute(eventGenerator, Context.OperatorContext.PARTITIONER, new StatelessPartitioner<EventGenerator>(1));
 
     return redisJoin.output;
+  }
+
+  private void setupRedis(Map<Integer, List<Integer>> campaigns) {
+
+    RedisHelper redisHelper = new RedisHelper();
+    redisHelper.init("node35.morado.com");
+
+    redisHelper.prepareRedis(campaigns);
   }
 }

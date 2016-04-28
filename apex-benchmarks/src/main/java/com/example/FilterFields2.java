@@ -7,7 +7,7 @@ import com.datatorrent.common.util.BaseOperator;
 import com.google.gson.JsonObject;
 
 @Stateless
-public class FilterFields extends BaseOperator
+public class FilterFields2 extends BaseOperator
 {
     public transient DefaultInputPort<JsonObject> input = new DefaultInputPort<JsonObject>()
     {
@@ -16,17 +16,16 @@ public class FilterFields extends BaseOperator
         {
             try {
 
-                Tuple tuple = new Tuple();
+                Tuple2 tuple = new Tuple2();
 
-                tuple.adId = jsonObject.get("ad_id").getAsLong();
-                tuple.event_time = jsonObject.get("event_time").getAsLong();
+                tuple.adId = jsonObject.get("ad_id").getAsString();
+                tuple.event_time = jsonObject.get("event_time").getAsString();
 
                 output.emit(tuple);
             } catch (Exception e) {
-                throw new RuntimeException(e) ;
             }
         }
     };
 
-    public transient DefaultOutputPort<Tuple> output = new DefaultOutputPort();
+    public transient DefaultOutputPort<Tuple2> output = new DefaultOutputPort();
 }

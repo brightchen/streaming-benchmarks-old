@@ -14,22 +14,7 @@ public class TupleGenerateOperator implements InputOperator
 
   @Override
   public void emitTuples() {
-    if(outputPort.isConnected())
-    {
-      for(int i=0; i<batchSize; ++i)
-      {
-        outputPort.emit(tupleGenerator.next());
-      }
-    }
-    
-    if(batchSleepTime > 0)
-    {
-      try
-      {
-        Thread.sleep(batchSleepTime);
-      }
-      catch(Exception e){}
-    }
+    outputPort.emit(tupleGenerator.next());
   }
   
 

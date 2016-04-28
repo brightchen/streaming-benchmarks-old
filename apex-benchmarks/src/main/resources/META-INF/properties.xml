@@ -66,5 +66,23 @@
     <value>QueryResult-${dt.attr.APPLICATION_NAME}</value>
   </property>
   <!-- DCHardCoded end -->
+  <property>
+    <name>dt.operator.kafkaInput.prop.initialPartitionCount</name>
+    <value>12</value>
+  </property>
+
+  <property>
+    <name>dt.operator.redisJoin.redisServerHost</name>
+    <value>node35.morado.com</value>
+  </property>
+  <property>
+    <name>dt.operator.campaignProcessor.redisServerHost</name>
+    <value>node35.morado.com</value>
+  </property>
+
+  <property>
+    <name>dt.attr.QUEUE_CAPACITY</name>
+    <value>65536</value>
+  </property>
 </configuration>
 
