@@ -7,11 +7,10 @@
  "timeBuckets":["10s"],
  "values":
   [
-    {"name":"clicks","type":"long","aggregators":["SUM"]}
+    {"name":"clicks","type":"long","aggregators":["COUNT"]}
   ],
  "dimensions":
   [
-    {"combination":["adId"]},
     {"combination":["campaignId"]}
   ]
 }

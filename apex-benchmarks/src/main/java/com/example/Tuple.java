@@ -58,7 +58,7 @@ public class Tuple implements Serializable
 
   public long getEventTime()
   {
-    return (event_ime == null) ? 0 : event_ime;
+    return event_ime;
   }
 
   public void setEventTime(long eventTime)
@@ -68,9 +68,13 @@ public class Tuple implements Serializable
 
   public long getTime()
   {
-    return getEventTime();
+    return event_ime;
   }
-
+  public void setTime(long time)
+  {
+    this.setEventTime(time);
+  }
+  
   public long getClicks()
   {
     return clicks;

@@ -44,7 +44,7 @@
   </property>
   <!-- ApplicationWithDC end -->
   
-    <!-- DCHardCoded begin -->
+  <!-- DCHardCoded begin -->
   <property>
     <name>dt.application.DCHardCoded.operator.Store.fileStore.basePathPrefix</name>
     <value>${dt.attr.APPLICATION_NAME}/Store</value>
@@ -58,5 +58,21 @@
     <value>QueryResult-${dt.attr.APPLICATION_NAME}</value>
   </property>
   <!-- DCHardCoded end -->
+  
+  <!-- AppWithDCWithoutDe begin -->
+  <property>
+    <name>dt.application.AppWithDCWithoutDe.operator.Store.fileStore.basePathPrefix</name>
+    <value>${dt.attr.APPLICATION_NAME}/Store</value>
+  </property>
+  <property>
+    <name>dt.application.AppWithDCWithoutDe.operator.Store.embeddableQueryInfoProvider.topic</name>
+    <value>Query-${dt.attr.APPLICATION_NAME}</value>
+  </property>
+  <property>
+    <name>dt.application.AppWithDCWithoutDe.operator.QueryResult.topic</name>
+    <value>QueryResult-${dt.attr.APPLICATION_NAME}</value>
+  </property>
+  <!-- AppWithDCWithoutDe end -->
+  
 </configuration>
 

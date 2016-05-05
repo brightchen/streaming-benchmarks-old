@@ -98,9 +98,9 @@ public class EventGenerator extends BaseOperator implements InputOperator {
 
         sb.setLength(0);
         sb.append("{\"user_id\":\"");
-        sb.append(pageID);
-        sb.append("\",\"page_id\":\"");
         sb.append(userID);
+        sb.append("\",\"page_id\":\"");
+        sb.append(pageID);
         sb.append("\",\"ad_id\":\"");
         sb.append(ad_id.get(ThreadLocalRandom.current().nextInt(ad_id.size())));
         sb.append("\",\"ad_type\":\"");
@@ -116,6 +116,7 @@ public class EventGenerator extends BaseOperator implements InputOperator {
 
     @Override
     public void emitTuples() {
-        out.emit( generateElement() ) ;
+        for(int i=0; i<100; ++i)
+          out.emit( generateElement() ) ;
     }
 }

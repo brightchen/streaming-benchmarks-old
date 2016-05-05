@@ -29,6 +29,7 @@ public class RedisJoin extends BaseOperator
         @Override
         public void process(Tuple tuple)
         {
+          tuple.campaign_id = "";
             String campaign_id = redisAdCampaignCache.execute(tuple.ad_id);
 
             if (campaign_id == null || campaign_id.isEmpty()) {

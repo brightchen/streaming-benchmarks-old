@@ -1,6 +1,5 @@
 package com.example;
 
-import java.util.Calendar;
 import java.util.Random;
 
 public class SimpleTupleGenerator
@@ -13,7 +12,7 @@ public class SimpleTupleGenerator
   protected static final Random random = new Random();
   public Tuple next()
   {
-    return new Tuple(randomValue(adIds), randomValue(campaignIds), Calendar.getInstance().getTimeInMillis() + randomValue(eventTimeShifts), random.nextInt(maxClicks));
+    return new Tuple(randomValue(adIds), randomValue(campaignIds), System.currentTimeMillis() + randomValue(eventTimeShifts), random.nextInt(maxClicks));
   }
   
   public <T> T randomValue(T[] array)
